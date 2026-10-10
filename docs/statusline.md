@@ -3,7 +3,7 @@
 `statusline/statusline.py` renders the Claude Code status line. It uses only the Python standard library.
 
 ```
-Opus 5.5 │ MyTools ⎇ main │ PR #42 open approved ✓ │ ctx 44k/200k 22% │ cache 59m │ $1.23
+Opus 5.5 │ cache 59m │ ctx 44k/200k 22% │ $1.23 │ PR #42 open approved ✓ │ MyTools ⎇ main
 ```
 
 ## Segments

@@ -3,7 +3,7 @@
 
 Reads the session JSON that Claude Code pipes on stdin and prints one line:
 
-    Opus 5.5 │ MyTools ⎇ main │ PR #12 open ✓ │ ctx 45.2k/200k 23% │ cache 52m │ $1.84
+    Opus 5.5 │ cache 52m │ ctx 45.2k/200k 23% │ $1.84 │ PR #12 open ✓ │ MyTools ⎇ main
 
 Segments:
   - model, folder, git branch
@@ -262,11 +262,11 @@ def main():
     parts = []
     for fn in (
         lambda: seg_model(data),
-        lambda: location,
-        lambda: seg_pr(cwd, branch),
-        lambda: seg_context(data, entries),
         lambda: seg_cache(entries),
+        lambda: seg_context(data, entries),
         lambda: seg_cost(data),
+        lambda: seg_pr(cwd, branch),
+        lambda: location,
     ):
         try:
             seg = fn()
