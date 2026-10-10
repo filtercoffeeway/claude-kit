@@ -3,7 +3,7 @@
 
 Reads the session JSON that Claude Code pipes on stdin and prints one line:
 
-    Opus 5.5 │ cache 52m │ ctx 45.2k/200k 23% │ $1.84 │ PR #12 open ✓ │ claude-kit ⎇ main
+    Opus 5.5 │ cache 52m │ ctx 45.2k/200k 23% │ $1.84 │ 5h 77% left ↻2h13m │ PR #12 open ✓ │ claude-kit ⎇ main
 
 Segments:
   - model, folder, git branch
@@ -11,6 +11,7 @@ Segments:
   - context size: tokens in the last request vs. the context window
   - prompt cache time left: last API call + cache TTL (5m or 1h, detected from the transcript)
   - API-equivalent cost of the session (cost.total_cost_usd from Claude Code)
+  - claude.ai 5-hour rate limit left and time to reset (rate_limits.five_hour, Pro/Max only)
 
 Only uses the standard library. Never raises: a broken segment is skipped.
 """
@@ -161,6 +162,24 @@ def seg_cost(data):
     return color(f"${cost:.2f}", YELLOW)
 
 
+def seg_limit(data):
+    """Share of the claude.ai 5-hour rate limit left, and time until it resets."""
+    window = (data.get("rate_limits") or {}).get("five_hour") or {}
+    used = window.get("used_percentage")
+    if used is None:
+        return None
+    left = max(0.0, 100 - used)
+    c = GREEN if left > 50 else YELLOW if left > 20 else RED
+    text = color(f"5h {left:.0f}% left", c)
+    resets_at = window.get("resets_at")
+    if resets_at:
+        secs = int(resets_at - time.time())
+        if secs > 0:
+            h, m = divmod(secs // 60, 60)
+            text += " " + color(f"↻{h}h{m:02d}m" if h else f"↻{m}m", DIM)
+    return text
+
+
 # ---------------------------------------------------------------- PR lookup
 
 def pr_cache_file(cwd, branch):
@@ -265,6 +284,7 @@ def main():
         lambda: seg_cache(entries),
         lambda: seg_context(data, entries),
         lambda: seg_cost(data),
+        lambda: seg_limit(data),
         lambda: seg_pr(cwd, branch),
         lambda: location,
     ):

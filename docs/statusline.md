@@ -3,7 +3,7 @@
 `statusline/statusline.py` renders the Claude Code status line. It uses only the Python standard library.
 
 ```
-Opus 5.5 │ cache 59m │ ctx 44k/200k 22% │ $1.23 │ PR #42 open approved ✓ │ claude-kit ⎇ main
+Opus 5.5 │ cache 59m │ ctx 44k/200k 22% │ $1.23 │ 5h 77% left ↻2h13m │ PR #42 open approved ✓ │ claude-kit ⎇ main
 ```
 
 ## Segments
@@ -16,6 +16,7 @@ Opus 5.5 │ cache 59m │ ctx 44k/200k 22% │ $1.23 │ PR #42 open approved �
 | Context | Tokens sent in the last request (`input + cache_creation + cache_read`) vs. the context window size. Uses `context_window.current_usage` when Claude Code provides it, otherwise the last assistant entry in the transcript. Green < 50%, yellow < 80%, red after that. |
 | Cache | Time left before the prompt cache expires: the timestamp of the last API call plus the TTL. The TTL is 1h if recent requests wrote `ephemeral_1h` cache entries, otherwise 5m. Every API call that reads the cache resets the timer. |
 | Cost | `cost.total_cost_usd`: Claude Code's API-equivalent cost for the session. |
+| 5h limit | `rate_limits.five_hour`: how much of the claude.ai 5-hour usage window is left (`100 - used_percentage`) and the time until it resets (`resets_at`). Green > 50% left, yellow > 20%, red after that. Claude Code only sends this to Pro and Max subscribers, after the session's first API response, so it is hidden before then and when you use an API key. |
 
 ## Setup
 

@@ -4,7 +4,7 @@ Tools, skills, and agents for Claude Code.
 
 | Tool | Folder | What it does |
 |------|--------|--------------|
-| Status line | [`statusline/`](statusline/) | Model, branch, PR status, context size, prompt-cache time left, API-equivalent cost |
+| Status line | [`statusline/`](statusline/) | Model, branch, PR status, context size, prompt-cache time left, API-equivalent cost, 5-hour usage left |
 | Claude usage | _planned_ | — |
 
 Docs live in [`docs/`](docs/).
