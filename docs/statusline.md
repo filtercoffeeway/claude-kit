@@ -3,7 +3,7 @@
 `statusline/statusline.py` renders the Claude Code status line. It uses only the Python standard library.
 
 ```
-Opus 5.5 │ cache 59m │ ctx 44k/200k 22% │ $1.23 │ PR #42 open approved ✓ │ MyTools ⎇ main
+Opus 5.5 │ cache 59m │ ctx 44k/200k 22% │ $1.23 │ PR #42 open approved ✓ │ claude-kit ⎇ main
 ```
 
 ## Segments
@@ -12,24 +12,28 @@ Opus 5.5 │ cache 59m │ ctx 44k/200k 22% │ $1.23 │ PR #42 open approved �
 |---------|--------|
 | Model | `model.display_name` from the stdin JSON |
 | Folder + branch | `workspace.current_dir`, `git branch --show-current` |
-| PR | `gh pr view <branch>` gives the number, state (open/draft/merged/closed), review decision, and checks (✓ pass, ● pending, ✗ fail). The result is cached for 60s in `~/.cache/mytools/statusline/` and refreshed by a detached background process, so the status line never waits on the network. Hidden when the branch has no PR. |
+| PR | `gh pr view <branch>` gives the number, state (open/draft/merged/closed), review decision, and checks (✓ pass, ● pending, ✗ fail). The result is cached for 60s in `~/.cache/claude-kit/statusline/` and refreshed by a detached background process, so the status line never waits on the network. Hidden when the branch has no PR. |
 | Context | Tokens sent in the last request (`input + cache_creation + cache_read`) vs. the context window size. Uses `context_window.current_usage` when Claude Code provides it, otherwise the last assistant entry in the transcript. Green < 50%, yellow < 80%, red after that. |
 | Cache | Time left before the prompt cache expires: the timestamp of the last API call plus the TTL. The TTL is 1h if recent requests wrote `ephemeral_1h` cache entries, otherwise 5m. Every API call that reads the cache resets the timer. |
 | Cost | `cost.total_cost_usd`: Claude Code's API-equivalent cost for the session. |
 
 ## Setup
 
-`~/.claude/settings.json` points at the script, so it applies to every session and repo on this machine:
+```bash
+./setup.sh statusline        # or statusline/setup.sh
+```
+
+This writes the `statusLine` block to `~/.claude/settings.json` (or `$CLAUDE_CONFIG_DIR/settings.json`) with the script's absolute path:
 
 ```json
 "statusLine": {
   "type": "command",
-  "command": "python3 /Users/mahesh/Documents/MyTools/statusline/statusline.py",
+  "command": "python3 /path/to/claude-kit/statusline/statusline.py",
   "padding": 0
 }
 ```
 
-If you move this repo, update that path.
+If a different `statusLine` is already set, setup stops and shows it; pass `--force` to replace it. `--uninstall` removes the block only if it still matches this repo's install. If you move the repo, run setup again with `--force`.
 
 ## Notes
 

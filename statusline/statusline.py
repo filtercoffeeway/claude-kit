@@ -3,7 +3,7 @@
 
 Reads the session JSON that Claude Code pipes on stdin and prints one line:
 
-    Opus 5.5 │ cache 52m │ ctx 45.2k/200k 23% │ $1.84 │ PR #12 open ✓ │ MyTools ⎇ main
+    Opus 5.5 │ cache 52m │ ctx 45.2k/200k 23% │ $1.84 │ PR #12 open ✓ │ claude-kit ⎇ main
 
 Segments:
   - model, folder, git branch
@@ -24,7 +24,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-CACHE_DIR = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "mytools" / "statusline"
+CACHE_DIR = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "claude-kit" / "statusline"
 PR_CACHE_TTL = 60  # seconds before a PR lookup is refreshed
 TRANSCRIPT_TAIL_BYTES = 1_000_000
 
